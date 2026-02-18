@@ -1,0 +1,76 @@
+{
+  "config": [
+    {
+      "platform": "Linux",
+      "name": "Swift 6.0",
+      "runner": ["ubuntu-latest"],
+      "swift_version": "6.0",
+      "image": "swift:6.0-jammy",
+      "setup_command": "cd tests/TestPackage",
+      "command": "swift test",
+      "command_arguments": "",
+      "env": {
+        "TEST_ENV": "test_value"
+      }
+    },
+    {
+      "platform": "Linux",
+      "name": "Swift 6.1",
+      "runner": ["ubuntu-latest"],
+      "swift_version": "6.1",
+      "image": "swift:6.1-jammy",
+      "setup_command": "cd tests/TestPackage",
+      "command": "swift test",
+      "command_arguments": ""
+    },
+    {
+      "platform": "Linux",
+      "name": "Swift 6.2",
+      "runner": ["ubuntu-latest"],
+      "swift_version": "6.2",
+      "image": "swift:6.2-jammy",
+      "setup_command": "cd tests/TestPackage",
+      "command": "swift test",
+      "command_arguments": ""
+    },
+    {
+      "platform": "Windows",
+      "name": "Swift 6.0",
+      "runner": ["windows-2022"],
+      "swift_version": "6.0",
+      "image": "swift:6.0-windowsservercore-ltsc2022",
+      "setup_command": "cd tests/TestPackage",
+      "command": "swift test",
+      "command_arguments": ""
+    },
+    {
+      "platform": "Windows",
+      "name": "Swift 6.1",
+      "runner": ["windows-2022"],
+      "swift_version": "6.1",
+      "image": "swift:6.1-windowsservercore-ltsc2022",
+      "setup_command": "cd tests/TestPackage",
+      "command": "swift test",
+      "command_arguments": ""
+    },
+    {
+      "platform": "Windows",
+      "name": "Swift 6.2",
+      "runner": ["windows-2022"],
+      "swift_version": "6.2",
+      "image": "swift:6.2-windowsservercore-ltsc2022",
+      "setup_command": "cd tests/TestPackage",
+      "command": "swift test",
+      "command_arguments": ""
+    },
+    {
+      "platform": "macOS",
+      "name": "Xcode 26.2",
+      "runner": ["macos-26"],
+      "xcode_version": "26.2",
+      "setup_command": "cd tests/TestPackage",
+      "command": "xcrun swift test",
+      "command_arguments": ""
+    }
+  ]
+}
