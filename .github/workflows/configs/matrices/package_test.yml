@@ -15,8 +15,8 @@ config:
     runner:
       - macos-15
     xcode_version: "16.4.0"
-    setup_command: cd tests/TestPackage
-    command: xcrun swift test
+    setup_command: ""
+    command: xcrun swift test --package-path tests/TestPackage
     command_arguments: []
     env: {}
 
@@ -25,8 +25,8 @@ config:
     runner:
       - macos-26
     xcode_version: "26.2.0"
-    setup_command: cd tests/TestPackage
-    command: xcrun swift test
+    setup_command: ""
+    command: xcrun swift test --package-path tests/TestPackage
     command_arguments: []
     env: {}
 
@@ -40,8 +40,8 @@ config:
     runner:
       - macos-15
     xcode_version: "16.4.0"
-    setup_command: cd tests/TestPackage
-    command: xcrun swift build --build-tests --sdk "$(xcrun --sdk iphoneos --show-sdk-path)" --triple arm64-apple-ios
+    setup_command: ""
+    command: xcrun swift build --build-tests --package-path tests/TestPackage --sdk "$(xcrun --sdk iphoneos --show-sdk-path)" --triple arm64-apple-ios
     command_arguments: []
     env: {}
 
@@ -50,8 +50,8 @@ config:
     runner:
       - macos-26
     xcode_version: "26.2.0"
-    setup_command: cd tests/TestPackage
-    command: xcrun swift build --build-tests --sdk "$(xcrun --sdk iphoneos --show-sdk-path)" --triple arm64-apple-ios
+    setup_command: ""
+    command: xcrun swift build --build-tests --package-path tests/TestPackage --sdk "$(xcrun --sdk iphoneos --show-sdk-path)" --triple arm64-apple-ios
     command_arguments: []
     env: {}
 
@@ -65,8 +65,8 @@ config:
       - ubuntu-24.04
     swift_version: "6.0"
     image: swift:6.0-noble
-    setup_command: cd tests/TestPackage
-    command: swift test
+    setup_command: ""
+    command: swift test --package-path tests/TestPackage
     command_arguments: []
     env: {}
 
@@ -76,8 +76,8 @@ config:
       - ubuntu-24.04
     swift_version: "6.1"
     image: swift:6.1-noble
-    setup_command: cd tests/TestPackage
-    command: swift test
+    setup_command: ""
+    command: swift test --package-path tests/TestPackage
     command_arguments: []
     env: {}
 
@@ -87,8 +87,8 @@ config:
       - ubuntu-24.04
     swift_version: "6.2"
     image: swift:6.2-noble
-    setup_command: cd tests/TestPackage
-    command: swift test
+    setup_command: ""
+    command: swift test --package-path tests/TestPackage
     command_arguments: []
     env: {}
 
@@ -98,8 +98,8 @@ config:
       - ubuntu-24.04
     swift_version: "nightly-main"
     image: swiftlang/swift:nightly-main-noble
-    setup_command: cd tests/TestPackage
-    command: swift test
+    setup_command: ""
+    command: swift test --package-path tests/TestPackage
     command_arguments: []
     env: {}
 
@@ -109,8 +109,8 @@ config:
       - ubuntu-24.04
     swift_version: "nightly-6.3"
     image: swiftlang/swift:nightly-6.3-noble
-    setup_command: cd tests/TestPackage
-    command: swift test
+    setup_command: ""
+    command: swift test --package-path tests/TestPackage
     command_arguments: []
     env: {}
 
@@ -126,7 +126,7 @@ config:
     swift_version: "6.2"
     image: swift:6.2-noble
     setup_command: ""
-    command: ./.github/workflows/scripts/install-and-build-with-sdk.sh --static --build-command='cd tests/TestPackage && swift build' 6.2
+    command: ./.github/workflows/scripts/install-and-build-with-sdk.sh --static --build-command='swift build --package-path tests/TestPackage' 6.2
     command_arguments: []
     env: {}
 
@@ -137,7 +137,7 @@ config:
     swift_version: "nightly-main"
     image: swiftlang/swift:nightly-main-noble
     setup_command: ""
-    command: ./.github/workflows/scripts/install-and-build-with-sdk.sh --static --build-command='cd tests/TestPackage && swift build' nightly-main
+    command: ./.github/workflows/scripts/install-and-build-with-sdk.sh --static --build-command='swift build --package-path tests/TestPackage' nightly-main
     command_arguments: []
     env: {}
 
@@ -148,7 +148,7 @@ config:
     swift_version: "nightly-6.3"
     image: swiftlang/swift:nightly-6.3-noble
     setup_command: ""
-    command: ./.github/workflows/scripts/install-and-build-with-sdk.sh --static --build-command='cd tests/TestPackage && swift build' nightly-6.3
+    command: ./.github/workflows/scripts/install-and-build-with-sdk.sh --static --build-command='swift build --package-path tests/TestPackage' nightly-6.3
     command_arguments: []
     env: {}
 
@@ -164,7 +164,7 @@ config:
     swift_version: "6.2"
     image: swift:6.2-noble
     setup_command: ""
-    command: ./.github/workflows/scripts/install-and-build-with-sdk.sh --wasm --build-command='cd tests/TestPackage && swift build' 6.2
+    command: ./.github/workflows/scripts/install-and-build-with-sdk.sh --wasm --build-command='swift build --package-path tests/TestPackage' 6.2
     command_arguments: []
     env: {}
 
@@ -175,7 +175,7 @@ config:
     swift_version: "nightly-main"
     image: swiftlang/swift:nightly-main-noble
     setup_command: ""
-    command: ./.github/workflows/scripts/install-and-build-with-sdk.sh --wasm --build-command='cd tests/TestPackage && swift build' nightly-main
+    command: ./.github/workflows/scripts/install-and-build-with-sdk.sh --wasm --build-command='swift build --package-path tests/TestPackage' nightly-main
     command_arguments: []
     env: {}
 
@@ -186,7 +186,7 @@ config:
     swift_version: "nightly-next"
     image: swiftlang/swift:nightly-6.3-noble
     setup_command: ""
-    command: ./.github/workflows/scripts/install-and-build-with-sdk.sh --wasm --build-command='cd tests/TestPackage && swift build' nightly-6.3
+    command: ./.github/workflows/scripts/install-and-build-with-sdk.sh --wasm --build-command='swift build --package-path tests/TestPackage' nightly-6.3
     command_arguments: []
     env: {}
 
@@ -202,7 +202,7 @@ config:
     swift_version: "6.2"
     image: swift:6.2-noble
     setup_command: ""
-    command: ./.github/workflows/scripts/install-and-build-with-sdk.sh --embedded-wasm --build-command='cd tests/TestPackage && swift build' 6.2
+    command: ./.github/workflows/scripts/install-and-build-with-sdk.sh --embedded-wasm --build-command='swift build --package-path tests/TestPackage' 6.2
     command_arguments: []
     env: {}
 
@@ -213,7 +213,7 @@ config:
     swift_version: "nightly-main"
     image: swiftlang/swift:nightly-main-noble
     setup_command: ""
-    command: ./.github/workflows/scripts/install-and-build-with-sdk.sh --embedded-wasm --build-command='cd tests/TestPackage && swift build' nightly-main
+    command: ./.github/workflows/scripts/install-and-build-with-sdk.sh --embedded-wasm --build-command='swift build --package-path tests/TestPackage' nightly-main
     command_arguments: []
     env: {}
 
@@ -224,7 +224,7 @@ config:
     swift_version: "nightly-6.3"
     image: swiftlang/swift:nightly-6.3-noble
     setup_command: ""
-    command: ./.github/workflows/scripts/install-and-build-with-sdk.sh --embedded-wasm --build-command='cd tests/TestPackage && swift build' nightly-6.3
+    command: ./.github/workflows/scripts/install-and-build-with-sdk.sh --embedded-wasm --build-command='swift build --package-path tests/TestPackage' nightly-6.3
     command_arguments: []
     env: {}
 
@@ -240,7 +240,7 @@ config:
     swift_version: "nightly-main"
     image: swiftlang/swift:nightly-main-noble
     setup_command: ""
-    command: ./.github/workflows/scripts/install-and-build-with-sdk.sh --android --android-ndk-version=r27d --android-sdk-triple=aarch64-unknown-linux-android28 --android-sdk-triple=x86_64-unknown-linux-android28 --build-command='cd tests/TestPackage && swift build' nightly-main
+    command: ./.github/workflows/scripts/install-and-build-with-sdk.sh --android --android-ndk-version=r27d --android-sdk-triple=aarch64-unknown-linux-android28 --android-sdk-triple=x86_64-unknown-linux-android28 --build-command='swift build --package-path tests/TestPackage' nightly-main
     command_arguments: []
     env: {}
 
@@ -251,7 +251,7 @@ config:
     swift_version: "nightly-next"
     image: swiftlang/swift:nightly-6.3-noble
     setup_command: ""
-    command: ./.github/workflows/scripts/install-and-build-with-sdk.sh --android --android-ndk-version=r27d --android-sdk-triple=aarch64-unknown-linux-android28 --android-sdk-triple=x86_64-unknown-linux-android28 --build-command='cd tests/TestPackage && swift build' nightly-6.3
+    command: ./.github/workflows/scripts/install-and-build-with-sdk.sh --android --android-ndk-version=r27d --android-sdk-triple=aarch64-unknown-linux-android28 --android-sdk-triple=x86_64-unknown-linux-android28 --build-command='swift build --package-path tests/TestPackage' nightly-6.3
     command_arguments: []
     env: {}
 
@@ -266,8 +266,8 @@ config:
       - windows-2022
     swift_version: "6.2"
     image: swift:6.2-windowsservercore-ltsc2022
-    setup_command: cd tests/TestPackage
-    command: swift test
+    setup_command: ""
+    command: swift test --package-path tests/TestPackage
     command_arguments: []
     env: {}
 
@@ -277,8 +277,8 @@ config:
       - windows-2022
     swift_version: "nightly-main"
     image: swiftlang/swift:nightly-main-windowsservercore-ltsc2022
-    setup_command: cd tests/TestPackage
-    command: swift test
+    setup_command: ""
+    command: swift test --package-path tests/TestPackage
     command_arguments: []
     env: {}
 
@@ -288,7 +288,7 @@ config:
       - windows-2022
     swift_version: "nightly-next"
     image: swiftlang/swift:nightly-6.3-windowsservercore-ltsc2022
-    setup_command: cd tests/TestPackage
-    command: swift test
+    setup_command: ""
+    command: swift test --package-path tests/TestPackage
     command_arguments: []
     env: {}
