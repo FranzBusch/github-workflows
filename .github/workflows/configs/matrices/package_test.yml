@@ -227,3 +227,30 @@ config:
     command: ./.github/workflows/scripts/install-and-build-with-sdk.sh --embedded-wasm --build-command='cd tests/TestPackage && swift build' nightly-6.3
     command_arguments: []
     env: {}
+
+  # ============================================================================
+  # Android SDK Build Jobs
+  # ============================================================================
+  # Swift versions: nightly-main, nightly-next
+
+  - platform: Linux
+    name: Android SDK Swift nightly-main NDK r27d
+    runner:
+      - ubuntu-24.04
+    swift_version: "nightly-main"
+    image: swiftlang/swift:nightly-main-noble
+    setup_command: ""
+    command: ./.github/workflows/scripts/install-and-build-with-sdk.sh --android --android-ndk-version=r27d --android-sdk-triple=aarch64-unknown-linux-android28 --android-sdk-triple=x86_64-unknown-linux-android28 --build-command='cd tests/TestPackage && swift build' nightly-main
+    command_arguments: []
+    env: {}
+
+  - platform: Linux
+    name: Android SDK Swift nightly-next NDK r27d
+    runner:
+      - ubuntu-24.04
+    swift_version: "nightly-next"
+    image: swiftlang/swift:nightly-6.3-noble
+    setup_command: ""
+    command: ./.github/workflows/scripts/install-and-build-with-sdk.sh --android --android-ndk-version=r27d --android-sdk-triple=aarch64-unknown-linux-android28 --android-sdk-triple=x86_64-unknown-linux-android28 --build-command='cd tests/TestPackage && swift build' nightly-6.3
+    command_arguments: []
+    env: {}
