@@ -120,46 +120,49 @@ solutions while ensuring that the above unified requirements are met.
 At the bottom of the proposed approach is a similar matrix generation that the
 NIO workflows employ. This is the only way to avoid skipped jobs. Furthermore,
 it allows higher level workflows to generate default matrices. The matrix is
-defined in JSON which allows it to be either stored inside the repositories or
+defined in YAML which allows it to be either stored inside the repositories or
 dynamically generated. Below is the specification of a matrix:
 
-```json
-{
-  "config": [
-    { // This is a linux host platform based job. Below are all the valid keys
-      "runner": ["ubuntu-latest"],
-      "swift_version": "6.0",
-      "os": "jammy", // Used to find the right docker image
-      "setup_command": "uname -a",
-      "command": "swift test",
-      "arguments": "-Xswiftc -warnings-as-errors",
-      "env": {
-        "CUSTOM_VAR": "value",
-        "ANOTHER_VAR": "another_value"
-      }
-    },
-    { // This is a windows host platform based job. Below are all the valid keys
-      "runner": ["windows-latest"],
-      "swift_version": "6.0",
-      "setup_command": "uname -a",
-      "command": "swift test",
-      "arguments": "-Xswiftc -warnings-as-errors",
-      "env": {
-        "CUSTOM_VAR": "value"
-      }
-    },
-    { // This is a macOS host platform based job. Below are all the valid keys
-      "runner": ["macos", "tahoe", "ARM64", "general"],
-      "xcode_version": "26.2",
-      "setup_command": "systeminfo",
-      "command": "swift test",
-      "arguments": "-Xswiftc -warnings-as-errors",
-      "env": {
-        "CUSTOM_VAR": "value"
-      }
-    }
-  ]
-}
+```yaml
+config:
+  # This is a linux host platform based job. Below are all the valid keys
+  - platform: Linux
+    name: Swift 6.0
+    runner:
+      - ubuntu-latest
+    swift_version: "6.0"
+    os: jammy  # Used to find the right docker image
+    setup_command: uname -a
+    command: swift test
+    arguments: -Xswiftc -warnings-as-errors
+    env:
+      CUSTOM_VAR: value
+      ANOTHER_VAR: another_value
+  # This is a windows host platform based job. Below are all the valid keys
+  - platform: Windows
+    name: Swift 6.0
+    runner:
+      - windows-latest
+    swift_version: "6.0"
+    setup_command: echo "Starting tests"
+    command: swift test
+    arguments: -Xswiftc -warnings-as-errors
+    env:
+      CUSTOM_VAR: value
+  # This is a macOS host platform based job. Below are all the valid keys
+  - platform: macOS
+    name: Xcode 26.2
+    runner:
+      - macos
+      - tahoe
+      - ARM64
+      - general
+    xcode_version: "26.2"
+    setup_command: uname -a
+    command: swift test
+    arguments: -Xswiftc -warnings-as-errors
+    env:
+      CUSTOM_VAR: value
 ```
 ### Matrix generation
 
@@ -213,4 +216,9 @@ jobs:
 
 
 
+### Migration strategy 
 
+
+TODO: YML migration
+TODO: To scripts instead of inline
+TODO: Provide a default workflow and document the upgrade story for adopter packages

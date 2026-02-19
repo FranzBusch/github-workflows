@@ -12,18 +12,18 @@ jobs:
     name: Load matrix configuration
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.load.outputs.matrix }}
+      matrix_yaml: ${{ steps.load.outputs.matrix_yaml }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
         with:
           persist-credentials: false
-      - name: Load matrix JSON
+      - name: Load matrix YAML
         id: load
         run: |
-          matrix=$(cat .github/workflows/configs/matrices/test.json)
-          echo "matrix<<EOF" >> $GITHUB_OUTPUT
-          echo "$matrix" >> $GITHUB_OUTPUT
+          matrix_yaml=$(cat .github/workflows/configs/matrices/test.yml)
+          echo "matrix_yaml<<EOF" >> $GITHUB_OUTPUT
+          echo "$matrix_yaml" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
   test:
@@ -32,4 +32,4 @@ jobs:
     uses: ./.github/workflows/execute_matrix.yml
     with:
       name: test
-      matrix_string: ${{ needs.load-matrix.outputs.matrix }}
+      matrix_yaml_string: ${{ needs.load-matrix.outputs.matrix_yaml }}
