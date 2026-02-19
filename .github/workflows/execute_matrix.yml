@@ -77,7 +77,8 @@ jobs:
             "${{ matrix.config.command }}" \
             '${{ toJson(matrix.config.command_arguments) }}' \
             '${{ toJson(matrix.config.env) }}' \
-            "${{ inputs.needs_token }}"
+            "${{ inputs.needs_token }}" \
+            '${{ toJson(matrix.config.sdk) }}'
       - name: Run matrix job (Windows)
         if: ${{ matrix.config.platform == 'Windows' }}
         timeout-minutes: ${{ inputs.job_timeout }}
