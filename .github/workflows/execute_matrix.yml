@@ -47,7 +47,7 @@ jobs:
           echo "EOF" >> $GITHUB_OUTPUT
 
   execute-matrix:
-    name: ${{ matrix.config.platform }} (${{ matrix.config.name }})
+    name: ${{ matrix.config.name }}
     needs: convert-matrix
     runs-on: ${{ matrix.config.runner }}
     strategy:

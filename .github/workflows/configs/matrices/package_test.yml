@@ -8,46 +8,49 @@ config:
   # ============================================================================
   # macOS Build Jobs
   # ============================================================================
-  # Matrix: Xcode versions × macOS versions × architectures
-  # Default Xcode versions: 16.3, 16.4, 26.0
-  # Default macOS version: tahoe
-  # Default architecture: ARM64
+  # Default Xcode versions: 16.4, 26.0
 
   - platform: macOS
-    name: Xcode 16.3 ARM64
+    name: macOS Xcode 16.4.0 X86
     runner:
-      - self-hosted
-      - macos
-      - tahoe
-      - ARM64
-    xcode_version: "16.3"
-    setup_command: ""  # Optional pre-build command
-    command: xcrun swift test
-    command_arguments: []  # Add build flags here
-    env: {}  # Add environment variables here
-
-  - platform: macOS
-    name: Xcode 16.4 ARM64
-    runner:
-      - self-hosted
-      - macos
-      - tahoe
-      - ARM64
-    xcode_version: "16.4"
-    setup_command: ""
+      - macos-15
+    xcode_version: "16.4.0"
+    setup_command: cd tests/TestPackage
     command: xcrun swift test
     command_arguments: []
     env: {}
 
   - platform: macOS
-    name: Xcode 26.0 ARM64
+    name: macOS Xcode 26.2.0 ARM64
     runner:
-      - self-hosted
-      - macos
-      - tahoe
-      - ARM64
-    xcode_version: "26.0"
-    setup_command: ""
+      - macos-26
+    xcode_version: "26.2.0"
+    setup_command: cd tests/TestPackage
     command: xcrun swift test
+    command_arguments: []
+    env: {}
+
+  # ============================================================================
+  # iOS Build Jobs (Build-only)
+  # ============================================================================
+  # Default Xcode versions: 16.4, 26.0
+
+  - platform: macOS
+    name: iOS Xcode 16.4.0 X86
+    runner:
+      - macos-15
+    xcode_version: "16.4.0"
+    setup_command: cd tests/TestPackage
+    command: xcrun swift build --build-tests --sdk "$(xcrun --sdk iphoneos --show-sdk-path)" --triple arm64-apple-ios
+    command_arguments: []
+    env: {}
+
+  - platform: macOS
+    name: iOS Xcode 26.2.0 ARM64
+    runner:
+      - macos-26
+    xcode_version: "26.2.0"
+    setup_command: cd tests/TestPackage
+    command: xcrun swift build --build-tests --sdk "$(xcrun --sdk iphoneos --show-sdk-path)" --triple arm64-apple-ios
     command_arguments: []
     env: {}
