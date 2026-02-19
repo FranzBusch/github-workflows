@@ -61,7 +61,7 @@ jobs:
             "${{ matrix.config.image }}" \
             "${{ matrix.config.setup_command }}" \
             "${{ matrix.config.command }}" \
-            "${{ matrix.config.command_arguments }}" \
+            '${{ toJson(matrix.config.command_arguments) }}' \
             '${{ toJson(matrix.config.env) }}'
       - name: Run matrix job (Windows)
         if: ${{ matrix.config.platform == 'Windows' }}
@@ -70,7 +70,7 @@ jobs:
             -Image "${{ matrix.config.image }}" `
             -SetupCommand "${{ matrix.config.setup_command }}" `
             -Command "${{ matrix.config.command }}" `
-            -CommandArguments "${{ matrix.config.command_arguments }}" `
+            -CommandArguments '${{ toJson(matrix.config.command_arguments) }}' `
             -EnvJson '${{ toJson(matrix.config.env) }}'
       - name: Run matrix job (macOS)
         if: ${{ matrix.config.platform == 'macOS' }}
@@ -79,6 +79,6 @@ jobs:
             "${{ matrix.config.xcode_version }}" \
             "${{ matrix.config.setup_command }}" \
             "${{ matrix.config.command }}" \
-            "${{ matrix.config.command_arguments }}" \
+            '${{ toJson(matrix.config.command_arguments) }}' \
             '${{ toJson(matrix.config.env) }}'
 

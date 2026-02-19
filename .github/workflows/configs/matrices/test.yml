@@ -7,7 +7,9 @@ config:
     image: swift:6.0-jammy
     setup_command: cd tests/TestPackage
     command: swift test
-    command_arguments: ""
+    command_arguments:
+      - -Xswiftc
+      - -warnings-as-errors
     env:
       TEST_ENV: test_value
   - platform: Linux
@@ -18,7 +20,9 @@ config:
     image: swift:6.1-jammy
     setup_command: cd tests/TestPackage
     command: swift test
-    command_arguments: ""
+    command_arguments:
+      - -Xswiftc
+      - -warnings-as-errors
   - platform: Linux
     name: Swift 6.2
     runner:
@@ -27,7 +31,9 @@ config:
     image: swift:6.2-jammy
     setup_command: cd tests/TestPackage
     command: swift test
-    command_arguments: ""
+    command_arguments:
+      - -Xswiftc
+      - -warnings-as-errors
   - platform: Windows
     name: Swift 6.0
     runner:
@@ -36,7 +42,9 @@ config:
     image: swift:6.0-windowsservercore-ltsc2022
     setup_command: cd tests/TestPackage
     command: swift test
-    command_arguments: ""
+    command_arguments:
+      - -Xswiftc
+      - -warnings-as-errors
   - platform: Windows
     name: Swift 6.1
     runner:
@@ -45,7 +53,9 @@ config:
     image: swift:6.1-windowsservercore-ltsc2022
     setup_command: cd tests/TestPackage
     command: swift test
-    command_arguments: ""
+    command_arguments:
+      - -Xswiftc
+      - -warnings-as-errors
   - platform: Windows
     name: Swift 6.2
     runner:
@@ -54,7 +64,9 @@ config:
     image: swift:6.2-windowsservercore-ltsc2022
     setup_command: cd tests/TestPackage
     command: swift test
-    command_arguments: ""
+    command_arguments:
+      - -Xswiftc
+      - -warnings-as-errors
   - platform: macOS
     name: Xcode 26.2
     runner:
@@ -62,4 +74,6 @@ config:
     xcode_version: "26.2"
     setup_command: cd tests/TestPackage
     command: xcrun swift test
-    command_arguments: ""
+    command_arguments:
+      - -Xswiftc
+      - -warnings-as-errors

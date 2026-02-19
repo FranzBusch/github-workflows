@@ -7,13 +7,13 @@ set -euo pipefail
 #   $1: Docker image name
 #   $2: Setup command (can be empty)
 #   $3: Main command to run
-#   $4: Command arguments (can be empty)
+#   $4: JSON array or string of command arguments
 #   $5: JSON string of environment variables (can be empty)
 
 image="$1"
 setup_command="${2:-}"
 command="$3"
-command_arguments="${4:-}"
+command_arguments_json="${4:-}"
 env_json="${5:-}"
 
 if [[ -n "$setup_command" ]]; then
@@ -40,6 +40,19 @@ if [[ -n "$env_json" && "$env_json" != '{}' ]]; then
       docker_args+=("-e" "$key=$value")
     fi
   done < <(echo "$env_json" | jq -r 'to_entries[] | "\(.key)=\(.value)"')
+fi
+
+# Convert command_arguments from JSON array to space-separated string
+if [[ -n "$command_arguments_json" && "$command_arguments_json" != "null" ]]; then
+  # Check if it's an array by testing if it starts with [
+  if [[ "$command_arguments_json" =~ ^\[.*\]$ ]]; then
+    command_arguments=$(echo "$command_arguments_json" | jq -r 'join(" ")')
+  else
+    # If it's a plain string, use as-is
+    command_arguments="$command_arguments_json"
+  fi
+else
+  command_arguments=""
 fi
 
 docker_args+=("$image")

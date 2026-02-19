@@ -3,7 +3,7 @@
 #   -Image: Docker image name
 #   -SetupCommand: Setup command (can be empty)
 #   -Command: Main command to run
-#   -CommandArguments: Command arguments (can be empty)
+#   -CommandArguments: JSON array or string of command arguments
 #   -EnvJson: JSON string of environment variables (can be empty)
 
 param(
@@ -53,7 +53,20 @@ if (-not [string]::IsNullOrEmpty($EnvJson) -and $EnvJson -ne '{}' -and $EnvJson 
     }
 }
 
-$docker_args += @($Image, "cmd", "/s", "/c", "swift --version & $($setup_command_expression) $Command $CommandArguments")
+# Convert command_arguments from JSON array to space-separated string
+$command_args_string = ""
+if (-not [string]::IsNullOrEmpty($CommandArguments) -and $CommandArguments -ne 'null') {
+    # Check if it's a JSON array
+    if ($CommandArguments.Trim().StartsWith('[')) {
+        $args_array = $CommandArguments | ConvertFrom-Json
+        $command_args_string = $args_array -join ' '
+    } else {
+        # If it's a plain string, use as-is
+        $command_args_string = $CommandArguments
+    }
+}
+
+$docker_args += @($Image, "cmd", "/s", "/c", "swift --version & $($setup_command_expression) $Command $command_args_string")
 
 Write-Host "Executing Docker command: docker $($docker_args -join ' ')"
 & docker @docker_args

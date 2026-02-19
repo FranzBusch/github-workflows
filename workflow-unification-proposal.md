@@ -134,7 +134,9 @@ config:
     os: jammy  # Used to find the right docker image
     setup_command: uname -a
     command: swift test
-    arguments: -Xswiftc -warnings-as-errors
+    command_arguments:
+      - -Xswiftc
+      - -warnings-as-errors
     env:
       CUSTOM_VAR: value
       ANOTHER_VAR: another_value
@@ -146,7 +148,9 @@ config:
     swift_version: "6.0"
     setup_command: echo "Starting tests"
     command: swift test
-    arguments: -Xswiftc -warnings-as-errors
+    command_arguments:
+      - -Xswiftc
+      - -warnings-as-errors
     env:
       CUSTOM_VAR: value
   # This is a macOS host platform based job. Below are all the valid keys
@@ -160,7 +164,9 @@ config:
     xcode_version: "26.2"
     setup_command: uname -a
     command: swift test
-    arguments: -Xswiftc -warnings-as-errors
+    command_arguments:
+      - -Xswiftc
+      - -warnings-as-errors
     env:
       CUSTOM_VAR: value
 ```
