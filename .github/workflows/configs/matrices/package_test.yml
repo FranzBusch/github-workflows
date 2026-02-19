@@ -8,7 +8,7 @@ config:
   # ============================================================================
   # macOS Build Jobs
   # ============================================================================
-  # Default Xcode versions: 16.4, 26.0
+  # Xcode versions: 16.4, 26.0
 
   - platform: macOS
     name: macOS Xcode 16.4.0 X86
@@ -33,7 +33,7 @@ config:
   # ============================================================================
   # iOS Build Jobs (Build-only)
   # ============================================================================
-  # Default Xcode versions: 16.4, 26.0
+  # Xcode versions: 16.4, 26.0
 
   - platform: macOS
     name: iOS Xcode 16.4.0 X86
@@ -52,5 +52,64 @@ config:
     xcode_version: "26.2.0"
     setup_command: cd tests/TestPackage
     command: xcrun swift build --build-tests --sdk "$(xcrun --sdk iphoneos --show-sdk-path)" --triple arm64-apple-ios
+    command_arguments: []
+    env: {}
+
+  # ============================================================================
+  # Linux Build Jobs
+  # ============================================================================
+  # Swift versions: 6.0, 6.1, 6.2, nightly-main, nightly-6.3
+  - platform: Linux
+    name: Linux Swift 6.0 noble x86_64
+    runner:
+      - ubuntu-24.04
+    swift_version: "6.0"
+    image: swift:6.0-noble
+    setup_command: cd tests/TestPackage
+    command: swift test
+    command_arguments: []
+    env: {}
+
+  - platform: Linux
+    name: Linux Swift 6.1 noble x86_64
+    runner:
+      - ubuntu-24.04
+    swift_version: "6.1"
+    image: swift:6.1-noble
+    setup_command: cd tests/TestPackage
+    command: swift test
+    command_arguments: []
+    env: {}
+
+  - platform: Linux
+    name: Linux Swift 6.2 noble x86_64
+    runner:
+      - ubuntu-24.04
+    swift_version: "6.2"
+    image: swift:6.2-noble
+    setup_command: cd tests/TestPackage
+    command: swift test
+    command_arguments: []
+    env: {}
+
+  - platform: Linux
+    name: Linux Swift nightly-main noble x86_64
+    runner:
+      - ubuntu-24.04
+    swift_version: "nightly-main"
+    image: swiftlang/swift:nightly-main-noble
+    setup_command: cd tests/TestPackage
+    command: swift test
+    command_arguments: []
+    env: {}
+
+  - platform: Linux
+    name: Linux Swift nightly-next noble x86_64
+    runner:
+      - ubuntu-24.04
+    swift_version: "nightly-6.3"
+    image: swiftlang/swift:nightly-6.3-noble
+    setup_command: cd tests/TestPackage
+    command: swift test
     command_arguments: []
     env: {}
