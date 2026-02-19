@@ -113,3 +113,41 @@ config:
     command: swift test
     command_arguments: []
     env: {}
+
+  # ============================================================================
+  # Linux Static SDK Build Jobs
+  # ============================================================================
+  # Swift versions: 6.2, nightly-main, nightly-6.2
+
+  - platform: Linux
+    name: Static Linux SDK Swift 6.2 noble x86_64
+    runner:
+      - ubuntu-24.04
+    swift_version: "6.2"
+    image: swift:6.2-noble
+    setup_command: ""
+    command: ./.github/workflows/scripts/install-and-build-with-sdk.sh --static --build-command='cd tests/TestPackage && swift build' 6.2
+    command_arguments: []
+    env: {}
+
+  - platform: Linux
+    name: Static Linux SDK Swift nightly-6.2 noble x86_64
+    runner:
+      - ubuntu-24.04
+    swift_version: "nightly-6.2"
+    image: swiftlang/swift:nightly-6.2-noble
+    setup_command: ""
+    command: ./.github/workflows/scripts/install-and-build-with-sdk.sh --static --build-command='cd tests/TestPackage && swift build' nightly-6.2
+    command_arguments: []
+    env: {}
+
+  - platform: Linux
+    name: Static Linux SDK Swift nightly-main noble x86_64
+    runner:
+      - ubuntu-24.04
+    swift_version: "nightly-main"
+    image: swiftlang/swift:nightly-main-noble
+    setup_command: ""
+    command: ./.github/workflows/scripts/install-and-build-with-sdk.sh --static --build-command='cd tests/TestPackage && swift build' nightly-main
+    command_arguments: []
+    env: {}
