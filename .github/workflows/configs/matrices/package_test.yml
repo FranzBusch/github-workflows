@@ -1,0 +1,53 @@
+# This is a sample package test matrix that demonstrates how to configure
+# all the different job types for Swift package testing across platforms.
+#
+# To use this in your workflow, customize the configurations below based on
+# your package's requirements.
+
+config:
+  # ============================================================================
+  # macOS Build Jobs
+  # ============================================================================
+  # Matrix: Xcode versions × macOS versions × architectures
+  # Default Xcode versions: 16.3, 16.4, 26.0
+  # Default macOS version: tahoe
+  # Default architecture: ARM64
+
+  - platform: macOS
+    name: Xcode 16.3 ARM64
+    runner:
+      - self-hosted
+      - macos
+      - tahoe
+      - ARM64
+    xcode_version: "16.3"
+    setup_command: ""  # Optional pre-build command
+    command: xcrun swift test
+    command_arguments: []  # Add build flags here
+    env: {}  # Add environment variables here
+
+  - platform: macOS
+    name: Xcode 16.4 ARM64
+    runner:
+      - self-hosted
+      - macos
+      - tahoe
+      - ARM64
+    xcode_version: "16.4"
+    setup_command: ""
+    command: xcrun swift test
+    command_arguments: []
+    env: {}
+
+  - platform: macOS
+    name: Xcode 26.0 ARM64
+    runner:
+      - self-hosted
+      - macos
+      - tahoe
+      - ARM64
+    xcode_version: "26.0"
+    setup_command: ""
+    command: xcrun swift test
+    command_arguments: []
+    env: {}

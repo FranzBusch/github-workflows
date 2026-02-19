@@ -8,8 +8,8 @@ on:
     types: [opened, reopened, synchronize]
 
 jobs:
-  load-matrix:
-    name: Load matrix configuration
+  load-package-test-matrix:
+    name: Load package test matrix
     runs-on: ubuntu-latest
     outputs:
       matrix_yaml: ${{ steps.load.outputs.matrix_yaml }}
@@ -21,15 +21,17 @@ jobs:
       - name: Load matrix YAML
         id: load
         run: |
-          matrix_yaml=$(cat .github/workflows/configs/matrices/test.yml)
+          matrix_yaml=$(cat .github/workflows/configs/matrices/package_test.yml)
           echo "matrix_yaml<<EOF" >> $GITHUB_OUTPUT
           echo "$matrix_yaml" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
-  test:
-    name: Test
-    needs: load-matrix
+  package-test:
+    name: Package Test
+    needs: load-package-test-matrix
     uses: ./.github/workflows/execute_matrix.yml
     with:
-      name: test
-      matrix_yaml_string: ${{ needs.load-matrix.outputs.matrix_yaml }}
+      name: package-test
+      matrix_yaml_string: ${{ needs.load-package-test-matrix.outputs.matrix_yaml }}
+      job_timeout: 60
+      needs_token: false

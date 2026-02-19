@@ -14,6 +14,14 @@ on:
         type: string
         description: "The YAML string containing the matrix definition."
         required: true
+      job_timeout:
+        type: number
+        description: "Timeout in minutes for each job (default: 60)"
+        default: 60
+      needs_token:
+        type: boolean
+        description: "Whether to provide GITHUB_TOKEN to jobs"
+        default: false
 
 # We will cancel previously triggered workflow runs
 concurrency:
@@ -30,7 +38,10 @@ jobs:
       - name: Convert YAML to JSON
         id: convert
         run: |
-          matrix=$(echo '${{ inputs.matrix_yaml_string }}' | yq -o=json '.config' | jq -c '{config: .}')
+          matrix=$(cat <<'EOF' | yq -o=json '.config' | jq -c '{config: .}'
+          ${{ inputs.matrix_yaml_string }}
+          EOF
+          )
           echo "matrix<<EOF" >> $GITHUB_OUTPUT
           echo "$matrix" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
@@ -56,29 +67,42 @@ jobs:
         run: docker pull ${{ matrix.config.image }}
       - name: Run matrix job (Linux)
         if: ${{ matrix.config.platform == 'Linux' }}
+        timeout-minutes: ${{ inputs.job_timeout }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           ./.github/workflows/scripts/run-matrix-linux.sh \
             "${{ matrix.config.image }}" \
             "${{ matrix.config.setup_command }}" \
             "${{ matrix.config.command }}" \
             '${{ toJson(matrix.config.command_arguments) }}' \
-            '${{ toJson(matrix.config.env) }}'
+            '${{ toJson(matrix.config.env) }}' \
+            "${{ inputs.needs_token }}"
       - name: Run matrix job (Windows)
         if: ${{ matrix.config.platform == 'Windows' }}
+        timeout-minutes: ${{ inputs.job_timeout }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           .\.github\workflows\scripts\windows\run-matrix-windows.ps1 `
             -Image "${{ matrix.config.image }}" `
             -SetupCommand "${{ matrix.config.setup_command }}" `
             -Command "${{ matrix.config.command }}" `
             -CommandArguments '${{ toJson(matrix.config.command_arguments) }}' `
-            -EnvJson '${{ toJson(matrix.config.env) }}'
+            -EnvJson '${{ toJson(matrix.config.env) }}' `
+            -NeedsToken "${{ inputs.needs_token }}"
       - name: Run matrix job (macOS)
         if: ${{ matrix.config.platform == 'macOS' }}
+        timeout-minutes: ${{ inputs.job_timeout }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           ./.github/workflows/scripts/run-matrix-macos.sh \
             "${{ matrix.config.xcode_version }}" \
             "${{ matrix.config.setup_command }}" \
             "${{ matrix.config.command }}" \
             '${{ toJson(matrix.config.command_arguments) }}' \
-            '${{ toJson(matrix.config.env) }}'
+            '${{ toJson(matrix.config.env) }}' \
+            "${{ inputs.needs_token }}"
+
 

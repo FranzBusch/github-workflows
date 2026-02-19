@@ -5,6 +5,7 @@
 #   -Command: Main command to run
 #   -CommandArguments: JSON array or string of command arguments
 #   -EnvJson: JSON string of environment variables (can be empty)
+#   -NeedsToken: Boolean ("true"/"false") - if "true", passes GITHUB_TOKEN to container
 
 param(
     [Parameter(Mandatory=$true)]
@@ -20,7 +21,10 @@ param(
     [string]$CommandArguments = "",
 
     [Parameter(Mandatory=$false)]
-    [string]$EnvJson = ""
+    [string]$EnvJson = "",
+
+    [Parameter(Mandatory=$false)]
+    [string]$NeedsToken = "false"
 )
 
 $ErrorActionPreference = "Stop"
@@ -41,6 +45,13 @@ $docker_args = @(
     "-e", "SWIFT_VERSION=$env:SWIFT_VERSION"
 )
 
+# Provide token if needed
+if ($NeedsToken -eq "true" -and -not [string]::IsNullOrEmpty($env:GITHUB_TOKEN)) {
+    $docker_args += "-e"
+    $docker_args += "GITHUB_TOKEN=$env:GITHUB_TOKEN"
+}
+
+# Handle environment variables - support both object {} and null
 if (-not [string]::IsNullOrEmpty($EnvJson) -and $EnvJson -ne '{}' -and $EnvJson -ne 'null') {
     $env_obj = $EnvJson | ConvertFrom-Json
     if ($null -ne $env_obj) {
@@ -53,9 +64,9 @@ if (-not [string]::IsNullOrEmpty($EnvJson) -and $EnvJson -ne '{}' -and $EnvJson 
     }
 }
 
-# Convert command_arguments from JSON array to space-separated string
+# Convert command_arguments - support both array [], string, and null
 $command_args_string = ""
-if (-not [string]::IsNullOrEmpty($CommandArguments) -and $CommandArguments -ne 'null') {
+if (-not [string]::IsNullOrEmpty($CommandArguments) -and $CommandArguments -ne 'null' -and $CommandArguments -ne '[]') {
     # Check if it's a JSON array
     if ($CommandArguments.Trim().StartsWith('[')) {
         $args_array = $CommandArguments | ConvertFrom-Json
