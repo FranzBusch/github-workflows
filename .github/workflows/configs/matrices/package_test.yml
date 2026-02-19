@@ -58,7 +58,7 @@ config:
   # ============================================================================
   # Linux Build Jobs
   # ============================================================================
-  # Swift versions: 6.0, 6.1, 6.2, nightly-main, nightly-6.3
+  # Swift versions: 6.0, 6.1, 6.2, nightly-main, nightly-next
   - platform: Linux
     name: Linux Swift 6.0 noble x86_64
     runner:
@@ -117,7 +117,7 @@ config:
   # ============================================================================
   # Linux Static SDK Build Jobs
   # ============================================================================
-  # Swift versions: 6.2, nightly-main, nightly-6.2
+  # Swift versions: 6.2, nightly-main, nightly-next
 
   - platform: Linux
     name: Static Linux SDK Swift 6.2 noble x86_64
@@ -131,17 +131,6 @@ config:
     env: {}
 
   - platform: Linux
-    name: Static Linux SDK Swift nightly-6.2 noble x86_64
-    runner:
-      - ubuntu-24.04
-    swift_version: "nightly-6.2"
-    image: swiftlang/swift:nightly-6.2-noble
-    setup_command: ""
-    command: ./.github/workflows/scripts/install-and-build-with-sdk.sh --static --build-command='cd tests/TestPackage && swift build' nightly-6.2
-    command_arguments: []
-    env: {}
-
-  - platform: Linux
     name: Static Linux SDK Swift nightly-main noble x86_64
     runner:
       - ubuntu-24.04
@@ -149,5 +138,92 @@ config:
     image: swiftlang/swift:nightly-main-noble
     setup_command: ""
     command: ./.github/workflows/scripts/install-and-build-with-sdk.sh --static --build-command='cd tests/TestPackage && swift build' nightly-main
+    command_arguments: []
+    env: {}
+
+  - platform: Linux
+    name: Static Linux SDK Swift nightly-6.3 noble x86_64
+    runner:
+      - ubuntu-24.04
+    swift_version: "nightly-6.3"
+    image: swiftlang/swift:nightly-6.3-noble
+    setup_command: ""
+    command: ./.github/workflows/scripts/install-and-build-with-sdk.sh --static --build-command='cd tests/TestPackage && swift build' nightly-6.3
+    command_arguments: []
+    env: {}
+
+  # ============================================================================
+  # Wasm SDK Build Jobs
+  # ============================================================================
+  # Swift versions: 6.2, nightly-main, nightly-6.next
+
+  - platform: Linux
+    name: Wasm SDK Swift 6.2 noble x86_64
+    runner:
+      - ubuntu-24.04
+    swift_version: "6.2"
+    image: swift:6.2-noble
+    setup_command: ""
+    command: ./.github/workflows/scripts/install-and-build-with-sdk.sh --wasm --build-command='cd tests/TestPackage && swift build' 6.2
+    command_arguments: []
+    env: {}
+
+  - platform: Linux
+    name: Wasm SDK Swift nightly-main noble x86_64
+    runner:
+      - ubuntu-24.04
+    swift_version: "nightly-main"
+    image: swiftlang/swift:nightly-main-noble
+    setup_command: ""
+    command: ./.github/workflows/scripts/install-and-build-with-sdk.sh --wasm --build-command='cd tests/TestPackage && swift build' nightly-main
+    command_arguments: []
+    env: {}
+
+  - platform: Linux
+    name: Wasm SDK Swift nightly-next noble x86_64
+    runner:
+      - ubuntu-24.04
+    swift_version: "nightly-next"
+    image: swiftlang/swift:nightly-6.3-noble
+    setup_command: ""
+    command: ./.github/workflows/scripts/install-and-build-with-sdk.sh --wasm --build-command='cd tests/TestPackage && swift build' nightly-6.3
+    command_arguments: []
+    env: {}
+
+  # ============================================================================
+  # Embedded Wasm SDK Build Jobs
+  # ============================================================================
+  # Swift versions: 6.2, nightly-main, nightly-next
+
+  - platform: Linux
+    name: Embedded Wasm SDK Swift 6.2 noble x86_64
+    runner:
+      - ubuntu-24.04
+    swift_version: "6.2"
+    image: swift:6.2-noble
+    setup_command: ""
+    command: ./.github/workflows/scripts/install-and-build-with-sdk.sh --embedded-wasm --build-command='cd tests/TestPackage && swift build' 6.2
+    command_arguments: []
+    env: {}
+
+  - platform: Linux
+    name: Embedded Wasm SDK Swift nightly-main noble x86_64
+    runner:
+      - ubuntu-24.04
+    swift_version: "nightly-main"
+    image: swiftlang/swift:nightly-main-noble
+    setup_command: ""
+    command: ./.github/workflows/scripts/install-and-build-with-sdk.sh --embedded-wasm --build-command='cd tests/TestPackage && swift build' nightly-main
+    command_arguments: []
+    env: {}
+
+  - platform: Linux
+    name: Embedded Wasm SDK Swift nightly-next noble x86_64
+    runner:
+      - ubuntu-24.04
+    swift_version: "nightly-6.3"
+    image: swiftlang/swift:nightly-6.3-noble
+    setup_command: ""
+    command: ./.github/workflows/scripts/install-and-build-with-sdk.sh --embedded-wasm --build-command='cd tests/TestPackage && swift build' nightly-6.3
     command_arguments: []
     env: {}
