@@ -62,9 +62,6 @@ jobs:
         with:
           persist-credentials: false
           submodules: true
-      - name: Pull Docker image
-        if: ${{ matrix.config.platform == 'Linux' }}
-        run: docker pull ${{ matrix.config.image }}
       - name: Run matrix job (Linux)
         if: ${{ matrix.config.platform == 'Linux' }}
         timeout-minutes: ${{ inputs.job_timeout }}
@@ -72,7 +69,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           ./.github/workflows/scripts/run-matrix-linux.sh \
-            "${{ matrix.config.image }}" \
+            "${{ matrix.config.swift_version }}" \
             "${{ matrix.config.setup_command }}" \
             "${{ matrix.config.command }}" \
             '${{ toJson(matrix.config.command_arguments) }}' \
@@ -117,5 +114,4 @@ jobs:
             '${{ toJson(matrix.config.command_arguments) }}' \
             '${{ toJson(matrix.config.env) }}' \
             "${{ inputs.needs_token }}"
-
 

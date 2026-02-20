@@ -64,7 +64,6 @@ config:
     runner:
       - ubuntu-24.04
     swift_version: "6.0"
-    image: swift:6.0-noble
     setup_command: ""
     command: swift test --package-path tests/TestPackage
     command_arguments: []
@@ -75,7 +74,6 @@ config:
     runner:
       - ubuntu-24.04
     swift_version: "6.1"
-    image: swift:6.1-noble
     setup_command: ""
     command: swift test --package-path tests/TestPackage
     command_arguments: []
@@ -86,7 +84,6 @@ config:
     runner:
       - ubuntu-24.04
     swift_version: "6.2"
-    image: swift:6.2-noble
     setup_command: ""
     command: swift test --package-path tests/TestPackage
     command_arguments: []
@@ -97,7 +94,6 @@ config:
     runner:
       - ubuntu-24.04
     swift_version: "nightly-main"
-    image: swiftlang/swift:nightly-main-noble
     setup_command: ""
     command: swift test --package-path tests/TestPackage
     command_arguments: []
@@ -108,7 +104,6 @@ config:
     runner:
       - ubuntu-24.04
     swift_version: "nightly-6.3"
-    image: swiftlang/swift:nightly-6.3-noble
     setup_command: ""
     command: swift test --package-path tests/TestPackage
     command_arguments: []
@@ -124,7 +119,6 @@ config:
     runner:
       - ubuntu-24.04
     swift_version: "6.2"
-    image: swift:6.2-noble
     sdk:
       type: static-linux
     setup_command: ""
@@ -137,7 +131,6 @@ config:
     runner:
       - ubuntu-24.04
     swift_version: "nightly-main"
-    image: swiftlang/swift:nightly-main-noble
     sdk:
       type: static-linux
     setup_command: ""
@@ -150,7 +143,6 @@ config:
     runner:
       - ubuntu-24.04
     swift_version: "nightly-6.3"
-    image: swiftlang/swift:nightly-6.3-noble
     sdk:
       type: static-linux
     setup_command: ""
@@ -168,7 +160,6 @@ config:
     runner:
       - ubuntu-24.04
     swift_version: "6.2"
-    image: swift:6.2-noble
     sdk:
       type: wasm
     setup_command: ""
@@ -181,7 +172,6 @@ config:
     runner:
       - ubuntu-24.04
     swift_version: "nightly-main"
-    image: swiftlang/swift:nightly-main-noble
     sdk:
       type: wasm
     setup_command: ""
@@ -194,7 +184,6 @@ config:
     runner:
       - ubuntu-24.04
     swift_version: "nightly-6.3"
-    image: swiftlang/swift:nightly-6.3-noble
     sdk:
       type: wasm
     setup_command: ""
@@ -212,7 +201,6 @@ config:
     runner:
       - ubuntu-24.04
     swift_version: "6.2"
-    image: swift:6.2-noble
     sdk:
       type: wasm-embedded
     setup_command: ""
@@ -225,7 +213,6 @@ config:
     runner:
       - ubuntu-24.04
     swift_version: "nightly-main"
-    image: swiftlang/swift:nightly-main-noble
     sdk:
       type: wasm-embedded
     setup_command: ""
@@ -238,7 +225,6 @@ config:
     runner:
       - ubuntu-24.04
     swift_version: "nightly-6.3"
-    image: swiftlang/swift:nightly-6.3-noble
     sdk:
       type: wasm-embedded
     setup_command: ""
@@ -256,7 +242,6 @@ config:
     runner:
       - ubuntu-24.04
     swift_version: "nightly-main"
-    image: swiftlang/swift:nightly-main-noble
     sdk:
       type: android
       ndk_version: r27d
@@ -273,7 +258,6 @@ config:
     runner:
       - ubuntu-24.04
     swift_version: "nightly-6.3"
-    image: swiftlang/swift:nightly-6.3-noble
     sdk:
       type: android
       ndk_version: r27d
