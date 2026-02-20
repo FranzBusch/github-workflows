@@ -295,7 +295,6 @@ config:
     runner:
       - windows-2022
     swift_version: "6.2"
-    image: swift:6.2-windowsservercore-ltsc2022
     setup_command: ""
     command: swift test --package-path tests/TestPackage
     command_arguments: []
@@ -306,7 +305,6 @@ config:
     runner:
       - windows-2022
     swift_version: "nightly-main"
-    image: swiftlang/swift:nightly-main-windowsservercore-ltsc2022
     setup_command: ""
     command: swift test --package-path tests/TestPackage
     command_arguments: []
@@ -317,7 +315,6 @@ config:
     runner:
       - windows-2022
     swift_version: "nightly-6.3"
-    image: swiftlang/swift:nightly-6.3-windowsservercore-ltsc2022
     setup_command: ""
     command: swift test --package-path tests/TestPackage
     command_arguments: []
