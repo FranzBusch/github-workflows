@@ -55,13 +55,20 @@ jobs:
       matrix: ${{ fromJson(needs.convert-matrix.outputs.matrix) }}
     env:
       SWIFT_VERSION: ${{ matrix.config.swift_version }}
-      XCODE_VERSION: ${{ matrix.config.xcode_version }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
         with:
           persist-credentials: false
           submodules: true
+      - name: Install Swift
+        id: install-swift
+        uses: ./.github/actions/install-swift
+        with:
+          swift-version: ${{ matrix.config.swift_version || '' }}
+          sdk: ${{ matrix.config.sdk.type || '' }}
+          sdk-ndk-version: ${{ matrix.config.sdk.ndk_version || 'r27d' }}
+          sdk-android-triples: ${{ join(matrix.config.sdk.triples, ' ') || '' }}
       - name: Run matrix job (Linux)
         if: ${{ matrix.config.platform == 'Linux' }}
         timeout-minutes: ${{ inputs.job_timeout }}
@@ -76,23 +83,12 @@ jobs:
             '${{ toJson(matrix.config.env) }}' \
             "${{ inputs.needs_token }}" \
             '${{ toJson(matrix.config.sdk) }}'
-      - name: Install Python 3.10 (Windows)
-        if: ${{ matrix.config.platform == 'Windows' && !(matrix.config.swift_version == '6.1' || matrix.config.swift_version == '6.0' || matrix.config.swift_version == '5.10' || matrix.config.swift_version == '5.9') }}
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.10"
-          architecture: "x64"
-      - name: Install Python 3.9 (Windows)
-        if: ${{ matrix.config.platform == 'Windows' && (matrix.config.swift_version == '6.1' || matrix.config.swift_version == '6.0' || matrix.config.swift_version == '5.10' || matrix.config.swift_version == '5.9') }}
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.9"
-          architecture: "x64"
       - name: Run matrix job (Windows)
         if: ${{ matrix.config.platform == 'Windows' }}
         timeout-minutes: ${{ inputs.job_timeout }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: pwsh
         run: |
           .\.github\workflows\scripts\windows\run-matrix-windows.ps1 `
             -SwiftVersion "${{ matrix.config.swift_version }}" `
@@ -108,7 +104,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           ./.github/workflows/scripts/run-matrix-macos.sh \
-            "${{ matrix.config.xcode_version }}" \
+            "${{ steps.install-swift.outputs.xcode-version }}" \
             "${{ matrix.config.setup_command }}" \
             "${{ matrix.config.command }}" \
             '${{ toJson(matrix.config.command_arguments) }}' \
