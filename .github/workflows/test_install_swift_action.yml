@@ -1,0 +1,148 @@
+name: Test install-swift action
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - fb-unification
+
+jobs:
+  test:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # ── Linux toolchain ───────────────────────────────────────────────
+          - name: Linux Swift 6.0
+            runner: ubuntu-24.04
+            swift-version: "6.0"
+
+          - name: Linux Swift 6.1
+            runner: ubuntu-24.04
+            swift-version: "6.1"
+
+          - name: Linux Swift 6.2
+            runner: ubuntu-24.04
+            swift-version: "6.2"
+
+          - name: Linux nightly-main
+            runner: ubuntu-24.04
+            swift-version: "nightly-main"
+
+          - name: Linux nightly-6.3
+            runner: ubuntu-24.04
+            swift-version: "nightly-6.3"
+
+          # ── Linux SDKs (Swift 6.2) ────────────────────────────────────────
+          - name: Linux Swift 6.2 static-linux SDK
+            runner: ubuntu-24.04
+            swift-version: "6.2"
+            sdk: static-linux
+
+          - name: Linux Swift 6.2 wasm SDK
+            runner: ubuntu-24.04
+            swift-version: "6.2"
+            sdk: wasm
+
+          - name: Linux Swift 6.2 wasm-embedded SDK
+            runner: ubuntu-24.04
+            swift-version: "6.2"
+            sdk: wasm-embedded
+
+          - name: Linux nightly-main android SDK
+            runner: ubuntu-24.04
+            swift-version: "nightly-main"
+            sdk: android
+            sdk-ndk-version: r27d
+            sdk-android-triples: "aarch64-unknown-linux-android28 x86_64-unknown-linux-android28"
+
+          # ── macOS toolchain ───────────────────────────────────────────────
+          - name: macOS Swift 6.1
+            runner: macos-15
+            swift-version: "6.1"
+
+          - name: macOS Swift 6.2
+            runner: macos-26
+            swift-version: "6.2"
+
+          # ── Windows toolchain ─────────────────────────────────────────────
+          - name: Windows Swift 6.1
+            runner: windows-2022
+            swift-version: "6.1"
+
+          - name: Windows Swift 6.2
+            runner: windows-2022
+            swift-version: "6.2"
+
+          - name: Windows nightly-main
+            runner: windows-2022
+            swift-version: "nightly-main"
+
+          - name: Windows nightly-6.3
+            runner: windows-2022
+            swift-version: "nightly-6.3"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Install Swift
+        id: install-swift
+        uses: ./.github/actions/install-swift
+        with:
+          swift-version: ${{ matrix.swift-version }}
+          sdk: ${{ matrix.sdk || '' }}
+          sdk-ndk-version: ${{ matrix.sdk-ndk-version || 'r27d' }}
+          sdk-android-triples: ${{ matrix.sdk-android-triples || '' }}
+
+      - name: Verify Swift version (Linux and macOS)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: swift --version
+
+      - name: Verify Swift version (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: swift --version
+
+      - name: Verify sdk-name output is set
+        if: matrix.sdk != ''
+        shell: bash
+        run: |
+          sdk_name="${{ steps.install-swift.outputs.sdk-name }}"
+          if [ -z "$sdk_name" ]; then
+            echo "ERROR: sdk-name output is empty" >&2
+            exit 1
+          fi
+          echo "sdk-name: $sdk_name"
+
+      - name: Run tests (Linux without SDK)
+        if: runner.os == 'Linux' && matrix.sdk == ''
+        shell: bash
+        run: swift test --package-path tests/TestPackage
+
+      - name: Build with SDK (Linux with SDK)
+        if: runner.os == 'Linux' && matrix.sdk != ''
+        shell: bash
+        run: |
+          swift build \
+            --swift-sdk "${{ steps.install-swift.outputs.sdk-name }}" \
+            --package-path tests/TestPackage
+
+      - name: Run tests (macOS)
+        if: runner.os == 'macOS'
+        shell: bash
+        run: xcrun swift test --package-path tests/TestPackage
+
+      - name: Run tests (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: swift test --package-path tests/TestPackage

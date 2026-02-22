@@ -1,0 +1,98 @@
+name: Install Swift
+description: >
+  Installs a Swift toolchain on Linux (via swiftly), macOS (via xcode-select),
+  or Windows (via prebuilt installer scripts). Optionally installs a Swift SDK
+  on Linux for cross-compilation targets such as static-linux, Wasm, or Android.
+
+inputs:
+  swift-version:
+    description: >
+      Swift version to install. Accepts release versions like "6.2" or nightly
+      forms like "nightly-main" or "nightly-6.3". On macOS, this is looked up
+      in the built-in swift-version-to-xcode.yml mapping table.
+    required: false
+    default: ''
+  sdk:
+    description: >
+      Swift SDK type to install. Only supported on Linux. Accepted values are
+      static-linux, wasm, wasm-embedded, and android. Leaving this empty skips
+      SDK installation.
+    required: false
+    default: ''
+  sdk-ndk-version:
+    description: >
+      Android NDK version string, e.g. "r27d". Only used when sdk is "android".
+    required: false
+    default: 'r27d'
+  sdk-android-triples:
+    description: >
+      Space-separated Android target triples, e.g.
+      "aarch64-unknown-linux-android28 x86_64-unknown-linux-android28".
+      Only used when sdk is "android".
+    required: false
+    default: ''
+
+outputs:
+  sdk-name:
+    description: >
+      The name of the installed Swift SDK. Only set on Linux when the sdk input
+      is provided. Pass this value as --swift-sdk to your build command.
+    value: ${{ steps.linux-install.outputs.sdk-name }}
+
+runs:
+  using: composite
+  steps:
+    - name: Install Swift (Linux)
+      id: linux-install
+      if: runner.os == 'Linux'
+      shell: bash
+      env:
+        SWIFT_VERSION: ${{ inputs.swift-version }}
+        SDK_TYPE: ${{ inputs.sdk }}
+        SDK_NDK_VERSION: ${{ inputs.sdk-ndk-version }}
+        SDK_ANDROID_TRIPLES: ${{ inputs.sdk-android-triples }}
+        SDK_SCRIPT: ${{ github.action_path }}/../../workflows/scripts/install-and-build-with-sdk.sh
+      run: ${{ github.action_path }}/scripts/install-swift-linux.sh
+
+    - name: Install Swift (macOS)
+      id: macos-install
+      if: runner.os == 'macOS'
+      shell: bash
+      env:
+        SWIFT_VERSION: ${{ inputs.swift-version }}
+        SDK_TYPE: ${{ inputs.sdk }}
+        VERSION_MAP_FILE: ${{ github.action_path }}/swift-version-to-xcode.yml
+      run: ${{ github.action_path }}/scripts/install-swift-macos.sh
+
+    - name: Install Python 3.10 (Windows)
+      if: >-
+        runner.os == 'Windows' &&
+        inputs.swift-version != '6.1' &&
+        inputs.swift-version != '6.0' &&
+        inputs.swift-version != '5.10' &&
+        inputs.swift-version != '5.9'
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.10"
+        architecture: "x64"
+
+    - name: Install Python 3.9 (Windows)
+      if: >-
+        runner.os == 'Windows' && (
+        inputs.swift-version == '6.1' ||
+        inputs.swift-version == '6.0' ||
+        inputs.swift-version == '5.10' ||
+        inputs.swift-version == '5.9')
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.9"
+        architecture: "x64"
+
+    - name: Install Swift (Windows)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      env:
+        SWIFT_VERSION: ${{ inputs.swift-version }}
+        SDK_TYPE: ${{ inputs.sdk }}
+        SCRIPT_ROOT: ${{ github.action_path }}/../../workflows/scripts/windows
+      run: ${{ github.action_path }}/scripts/install-swift-windows.ps1

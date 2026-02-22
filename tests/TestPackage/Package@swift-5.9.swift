@@ -4,6 +4,9 @@ import PackageDescription
 
 let package = Package(
   name: "TestPackage",
+  platforms: [
+    .iOS(.v13),
+  ],
   targets: [
     .target(
       name: "Target1"

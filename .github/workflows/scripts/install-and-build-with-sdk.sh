@@ -84,7 +84,7 @@ swift_sdk_install_with_retry() {
 
         log "Attempt $attempt: Installing ${sdk_type} SDK from ${sdk_url}"
 
-        if "$swift_executable" sdk install "$sdk_url" --checksum "$checksum"; then
+        if "$swift_executable" sdk install "$sdk_url" --checksum "$checksum" >&2; then
             log "✅ ${sdk_type} SDK installed successfully"
             return 0
         else
@@ -107,6 +107,7 @@ INSTALL_ANDROID=false
 INSTALL_STATIC_LINUX=false
 INSTALL_WASM=false
 BUILD_EMBEDDED_WASM=false
+INSTALL_ONLY=false
 SWIFT_VERSION_INPUT=""
 SWIFT_BUILD_FLAGS=""
 SWIFT_BUILD_COMMAND="swift build"
@@ -137,6 +138,10 @@ while [[ $# -gt 0 ]]; do
         --embedded-wasm)
             INSTALL_WASM=true
             BUILD_EMBEDDED_WASM=true
+            shift
+            ;;
+        --install-only)
+            INSTALL_ONLY=true
             shift
             ;;
         --flags=*)
@@ -189,7 +194,7 @@ install_package() {
     else
         fatal "No supported package manager found"
     fi
-    eval "$INSTALL_PACKAGE_COMMAND $1"
+    eval "$INSTALL_PACKAGE_COMMAND $1" >&2
 }
 
 # Install dependencies
@@ -648,7 +653,7 @@ install_android_sdk() {
     rm -f "${sdk_url}"
 
     # now setup the link to the local ANDROID_NDK_HOME
-    swift sdk configure --show-configuration "$(swift sdk list | grep android | tail -n 1)"
+    swift sdk configure --show-configuration "$(swift sdk list 2>/dev/null | grep android | tail -n 1)" >&2
 
     # guess some common places where the swift-sdks file lives
     cd ~/Library/org.swift.swiftpm || cd ~/.config/swiftpm || cd ~/.local/swiftpm || cd ~/.swiftpm || cd /root/.swiftpm
@@ -712,17 +717,17 @@ install_wasm_sdk() {
 install_sdks() {
     if [[ "$INSTALL_ANDROID" == true ]]; then
         log "Starting install of Swift ${SWIFT_VERSION_INPUT} Android Swift SDK"
-        install_android_sdk
+        install_android_sdk >&2
     fi
 
     if [[ "$INSTALL_STATIC_LINUX" == true ]]; then
         log "Starting install of Swift ${SWIFT_VERSION_INPUT} Static Linux Swift SDK"
-        install_static_linux_sdk
+        install_static_linux_sdk >&2
     fi
 
     if [[ "$INSTALL_WASM" == true ]]; then
         log "Starting install of Swift ${SWIFT_VERSION_INPUT} Wasm Swift SDK"
-        install_wasm_sdk
+        install_wasm_sdk >&2
     fi
 }
 
@@ -803,9 +808,29 @@ build() {
     fi
 }
 
+output_sdk_name() {
+    # Output only the SDK name to stdout for use by calling scripts
+    if [[ "$INSTALL_ANDROID" == true ]]; then
+        # For Android, output the base SDK name (triples will be added per-build)
+        echo "${ANDROID_SDK_TAG}${ANDROID_SDK_PATH_SEP}android"
+    elif [[ "$INSTALL_STATIC_LINUX" == true ]]; then
+        echo "${STATIC_LINUX_SDK_TAG}_static-linux-0.0.1"
+    elif [[ "$INSTALL_WASM" == true ]]; then
+        if [[ "$BUILD_EMBEDDED_WASM" == true ]]; then
+            echo "${WASM_SDK_TAG}_wasm-embedded"
+        else
+            echo "${WASM_SDK_TAG}_wasm"
+        fi
+    fi
+}
+
 main() {
     install_sdks
-    build
+    if [[ "$INSTALL_ONLY" == true ]]; then
+        output_sdk_name
+    else
+        build
+    fi
 }
 
 main "$@"

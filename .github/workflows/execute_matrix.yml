@@ -1,0 +1,113 @@
+name: Execute matrix
+
+permissions:
+  contents: read
+
+on:
+  workflow_call:
+    inputs:
+      name:
+        type: string
+        description: "The name of the workflow used for the concurrency group."
+        required: true
+      matrix_yaml_string:
+        type: string
+        description: "The YAML string containing the matrix definition."
+        required: true
+      job_timeout:
+        type: number
+        description: "Timeout in minutes for each job (default: 60)"
+        default: 60
+      needs_token:
+        type: boolean
+        description: "Whether to provide GITHUB_TOKEN to jobs"
+        default: false
+
+# We will cancel previously triggered workflow runs
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.name }}
+  cancel-in-progress: true
+
+jobs:
+  convert-matrix:
+    name: Convert matrix YAML to JSON
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.convert.outputs.matrix }}
+    steps:
+      - name: Convert YAML to JSON
+        id: convert
+        run: |
+          matrix=$(cat <<'EOF' | yq -o=json '.config' | jq -c '{config: .}'
+          ${{ inputs.matrix_yaml_string }}
+          EOF
+          )
+          echo "matrix<<EOF" >> $GITHUB_OUTPUT
+          echo "$matrix" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+  execute-matrix:
+    name: ${{ matrix.config.name }}
+    needs: convert-matrix
+    runs-on: ${{ matrix.config.runner }}
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.convert-matrix.outputs.matrix) }}
+    env:
+      SWIFT_VERSION: ${{ matrix.config.swift_version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+        with:
+          persist-credentials: false
+          submodules: true
+      - name: Install Swift
+        id: install-swift
+        uses: ./.github/actions/install-swift
+        with:
+          swift-version: ${{ matrix.config.swift_version || '' }}
+          sdk: ${{ matrix.config.sdk.type || '' }}
+          sdk-ndk-version: ${{ matrix.config.sdk.ndk_version || 'r27d' }}
+          sdk-android-triples: ${{ join(matrix.config.sdk.triples, ' ') || '' }}
+      - name: Run matrix job (Linux)
+        if: ${{ matrix.config.platform == 'Linux' }}
+        timeout-minutes: ${{ inputs.job_timeout }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ./.github/workflows/scripts/run-matrix-linux.sh \
+            "${{ matrix.config.swift_version }}" \
+            "${{ matrix.config.setup_command }}" \
+            "${{ matrix.config.command }}" \
+            '${{ toJson(matrix.config.command_arguments) }}' \
+            '${{ toJson(matrix.config.env) }}' \
+            "${{ inputs.needs_token }}" \
+            '${{ toJson(matrix.config.sdk) }}'
+      - name: Run matrix job (Windows)
+        if: ${{ matrix.config.platform == 'Windows' }}
+        timeout-minutes: ${{ inputs.job_timeout }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: pwsh
+        run: |
+          .\.github\workflows\scripts\windows\run-matrix-windows.ps1 `
+            -SwiftVersion "${{ matrix.config.swift_version }}" `
+            -SetupCommand "${{ matrix.config.setup_command }}" `
+            -Command "${{ matrix.config.command }}" `
+            -CommandArguments '${{ toJson(matrix.config.command_arguments) }}' `
+            -EnvJson '${{ toJson(matrix.config.env) }}' `
+            -NeedsToken "${{ inputs.needs_token }}"
+      - name: Run matrix job (macOS)
+        if: ${{ matrix.config.platform == 'macOS' }}
+        timeout-minutes: ${{ inputs.job_timeout }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ./.github/workflows/scripts/run-matrix-macos.sh \
+            "${{ steps.install-swift.outputs.xcode-version }}" \
+            "${{ matrix.config.setup_command }}" \
+            "${{ matrix.config.command }}" \
+            '${{ toJson(matrix.config.command_arguments) }}' \
+            '${{ toJson(matrix.config.env) }}' \
+            "${{ inputs.needs_token }}"
+
